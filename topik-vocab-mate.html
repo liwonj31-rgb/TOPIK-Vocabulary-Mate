@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🐱 TOPIK Vocabulary Mate</title>
+
+  <style>
+    /* =====================================================
+       CSS 변수 & 리셋
+    ===================================================== */
+    :root {
+      --blue-pale:   #D6EAFA;
+      --blue-soft:   #A8D4F5;
+      --blue-main:   #5BA8D9;
+      --blue-deep:   #3A7EB5;
+      --pink-pale:   #FDE8EE;
+      --pink-soft:   #F9C2D0;
+      --pink-main:   #F07FA0;
+      --white:       #FFFFFF;
+      --bg:          #F2F8FD;
+      --card:        #FFFFFF;
+      --text:        #283A4A;
+      --text-mid:    #5E7A8C;
+      --text-light:  #9BB5C5;
+      --radius-xl:   24px;
+      --radius-lg:   18px;
+      --radius-md:   12px;
+      --radius-pill: 999px;
+      --shadow-sm:   0 2px 12px rgba(58,126,181,.10);
+      --shadow-md:   0 6px 28px rgba(58,126,181,.16);
+      --shadow-lg:   0 14px 48px rgba(58,126,181,.20);
+      --ease:        cubic-bezier(.4,0,.2,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.65;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* =====================================================
+       배경 장식 버블
+    ===================================================== */
+    .deco-bubble {
+      position: fixed; border-radius: 50%; pointer-events: none;
+      z-index: 0; opacity: .12;
+    }
+    .deco-bubble:nth-child(1){
+      width:420px;height:420px;background:var(--blue-soft);
+      top:-120px;left:-120px; animation:bFloat 14s ease-in-out infinite;
+    }
+    .deco-bubble:nth-child(2){
+      width:260px;height:260px;background:var(--pink-soft);
+      top:35%;right:-80px; animation:bFloat 11s ease-in-out infinite 4s;
+    }
+    .deco-bubble:nth-child(3){
+      width:200px;height:200px;background:var(--blue-pale);
+      bottom:8%;left:4%; animation:bFloat 13s ease-in-out infinite 7s;
+    }
+    @keyframes bFloat {
+      0%,100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-26px) scale(1.04); }
+    }
+
+    /* =====================================================
+       네비게이션
+    ===================================================== */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(255,255,255,.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1.5px solid rgba(168,212,245,.35);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; height: 62px;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 1.1rem; font-weight: 900; color: var(--blue-deep);
+      letter-spacing: -.4px;
+    }
+    .nav-cat { font-size: 1.5rem; animation: catBob 2.8s ease-in-out infinite; }
+    @keyframes catBob {
+      0%,100%{ transform: translateY(0) rotate(-4deg); }
+      50%    { transform: translateY(-5px) rotate(4deg); }
+    }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a {
+      padding: 7px 15px; border-radius: var(--radius-pill);
+      font-size: .83rem; font-weight: 700; color: var(--text-mid);
+      transition: background .2s var(--ease), color .2s var(--ease);
+    }
+    .nav-links a:hover,
+    .nav-links a.active { background: var(--blue-pale); color: var(--blue-deep); }
+    @media(max-width:560px){ .nav-links { display: none; } }
+
+    /* =====================================================
+       공통 섹션 / 레이아웃
+    ===================================================== */
+    .page-wrap { position: relative; z-index: 1; }
+    section { padding: 72px 20px; }
+    .sec-label {
+      display: inline-block; margin-bottom: 10px;
+      background: var(--pink-pale); color: var(--pink-main);
+      font-size: .76rem; font-weight: 800; letter-spacing: .6px;
+      padding: 4px 14px; border-radius: var(--radius-pill);
+    }
+    .sec-title {
+      font-size: clamp(1.45rem,4vw,2.1rem);
+      font-weight: 900; letter-spacing: -.7px; margin-bottom: 8px;
+    }
+    .sec-title em { color: var(--blue-main); font-style: normal; }
+    .sec-sub { font-size: .9rem; color: var(--text-mid); margin-bottom: 40px; }
+    .center { text-align: center; }
+
+    /* =====================================================
+       히어로 섹션
+    ===================================================== */
+    #hero {
+      min-height: 88vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 90px 20px 60px;
+    }
+    .hero-cats {
+      font-size: clamp(3.5rem,12vw,6.5rem);
+      line-height: 1; margin-bottom: 22px;
+      display: flex; gap: 10px; justify-content: center;
+      filter: drop-shadow(0 10px 22px rgba(91,168,217,.22));
+    }
+    .hero-cats span { display:inline-block; }
+    .hero-cats span:nth-child(1){ animation: catFloat 3.5s ease-in-out infinite; }
+    .hero-cats span:nth-child(2){ animation: catFloat 3.5s ease-in-out infinite .8s; }
+    .hero-cats span:nth-child(3){ animation: catFloat 3.5s ease-in-out infinite 1.6s; }
+    @keyframes catFloat {
+      0%,100%{ transform: translateY(0); }
+      50%    { transform: translateY(-14px); }
+    }
+    .hero-badge {
+      display: inline-block; margin-bottom: 18px;
+      background: linear-gradient(135deg,var(--blue-pale),var(--pink-pale));
+      color: var(--blue-deep); font-size: .82rem; font-weight: 800;
+      padding: 5px 20px; border-radius: var(--radius-pill);
+      letter-spacing: .5px;
+    }
+    .hero-title {
+      font-size: clamp(2rem,7vw,4rem);
+      font-weight: 900; letter-spacing: -1.5px; line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero-title .grad {
+      background: linear-gradient(135deg,var(--blue-deep) 20%,var(--pink-main) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub { font-size: clamp(.95rem,2.4vw,1.18rem); color: var(--text-mid); margin-bottom: 38px; }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      background: linear-gradient(135deg,var(--blue-deep),var(--blue-main));
+      color: #fff; font-weight: 800; font-size: .98rem;
+      padding: 13px 32px; border-radius: var(--radius-pill); border: none;
+      box-shadow: 0 4px 20px rgba(58,126,181,.35);
+      transition: transform .2s var(--ease), box-shadow .2s var(--ease);
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 9px 30px rgba(58,126,181,.45); }
+    .btn-ghost {
+      background: var(--white); color: var(--blue-deep);
+      font-weight: 800; font-size: .98rem;
+      padding: 13px 32px; border-radius: var(--radius-pill);
+      border: 2px solid var(--blue-soft);
+      transition: background .2s var(--ease), border-color .2s var(--ease);
+    }
+    .btn-ghost:hover { background: var(--blue-pale); border-color: var(--blue-main); }
+
+    /* 히어로 통계 칩 */
+    .hero-chips { display: flex; gap: 16px; margin-top: 52px; flex-wrap: wrap; justify-content: center; }
+    .chip {
+      background: var(--white); border-radius: var(--radius-pill);
+      padding: 10px 22px; box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; gap: 8px;
+      font-size: .85rem; font-weight: 700; color: var(--text-mid);
+    }
+    .chip-num { font-size: 1.1rem; font-weight: 900; color: var(--blue-deep); }
+
+    /* =====================================================
+       오늘의 응원 메시지
+    ===================================================== */
+    #cheer { background: var(--white); }
+    .cheer-card {
+      max-width: 640px; margin: 0 auto;
+      background: linear-gradient(135deg,var(--blue-pale),var(--pink-pale));
+      border-radius: var(--radius-xl); padding: 42px 36px;
+      text-align: center; box-shadow: var(--shadow-md);
+      position: relative; overflow: hidden;
+    }
+    .cheer-card::before {
+      content:''; position:absolute; inset:0;
+      background: radial-gradient(circle at 80% 20%, rgba(249,194,208,.4) 0%, transparent 60%);
+      pointer-events:none;
+    }
+    .cheer-cat { font-size: 3.2rem; margin-bottom: 14px; display:block; animation:catBob 3s ease-in-out infinite; }
+    .cheer-msg {
+      font-size: clamp(1.1rem,3vw,1.45rem);
+      font-weight: 800; color: var(--text); line-height: 1.5;
+      margin-bottom: 6px;
+    }
+    .cheer-zh { font-size: .9rem; color: var(--text-mid); margin-bottom: 24px; }
+    .cheer-refresh {
+      background: var(--white); color: var(--blue-deep);
+      font-weight: 800; font-size: .88rem;
+      padding: 9px 24px; border-radius: var(--radius-pill);
+      border: none; box-shadow: var(--shadow-sm);
+      transition: transform .2s var(--ease), box-shadow .2s var(--ease);
+    }
+    .cheer-refresh:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+    /* =====================================================
+       단어 카드 섹션
+    ===================================================== */
+    #cards { background: var(--bg); }
+
+    /* 카드 네비 */
+    .card-nav {
+      display: flex; align-items: center; justify-content: center;
+      gap: 18px; margin-bottom: 32px; flex-wrap: wrap;
+    }
+    .card-nav-btn {
+      width: 46px; height: 46px; border-radius: 50%; border: none;
+      background: var(--white); box-shadow: var(--shadow-sm);
+      font-size: 1.3rem; color: var(--blue-deep);
+      display: flex; align-items: center; justify-content: center;
+      transition: background .18s var(--ease), transform .18s var(--ease);
+    }
+    .card-nav-btn:hover { background: var(--blue-pale); transform: scale(1.08); }
+    .card-counter {
+      font-size: .9rem; font-weight: 700; color: var(--text-mid);
+      min-width: 70px; text-align: center;
+    }
+
+    /* 플립 카드 */
+    .flip-scene {
+      width: 100%; max-width: 420px;
+      height: 260px; margin: 0 auto 28px;
+      perspective: 900px;
+    }
+    .flip-card {
+      width: 100%; height: 100%;
+      position: relative; transform-style: preserve-3d;
+      transition: transform .55s var(--ease);
+      cursor: pointer;
+    }
+    .flip-card.flipped-once  { transform: rotateY(180deg); }
+    .flip-card.flipped-twice { transform: rotateY(360deg); }
+    .flip-face {
+      position: absolute; inset: 0;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      border-radius: var(--radius-xl);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 30px 24px; text-align: center;
+    }
+    /* 앞면 */
+    .flip-front {
+      background: var(--white); box-shadow: var(--shadow-md);
+    }
+    .flip-front .word-ko {
+      font-size: clamp(2rem,8vw,3rem); font-weight: 900;
+      letter-spacing: -.5px; color: var(--text); margin-bottom: 10px;
+    }
+    .flip-front .word-hint { font-size: .82rem; color: var(--text-light); }
+    /* 뒷면(뜻) */
+    .flip-back {
+      background: linear-gradient(135deg,var(--blue-pale),#e8f4ff);
+      box-shadow: var(--shadow-md);
+      transform: rotateY(180deg);
+    }
+    .flip-back .word-zh { font-size: clamp(1.5rem,5vw,2rem); font-weight: 900; color: var(--blue-deep); margin-bottom: 8px; }
+    .flip-back .word-ko-small { font-size: .9rem; color: var(--text-mid); margin-bottom: 6px; }
+    .flip-back .word-pron { font-size: .8rem; color: var(--text-light); font-style: italic; }
+    /* 예문(세 번째면 = 앞면 위에 덮기) */
+    .flip-example {
+      background: linear-gradient(135deg,var(--pink-pale),#fff0f4);
+      box-shadow: var(--shadow-md);
+      transform: rotateY(360deg);
+    }
+    .flip-example .ex-ko { font-size: clamp(.95rem,2.8vw,1.1rem); font-weight: 700; color: var(--text); line-height: 1.6; margin-bottom: 8px; }
+    .flip-example .ex-zh { font-size: .85rem; color: var(--text-mid); line-height: 1.6; }
+    .flip-example .ex-label {
+      font-size: .72rem; font-weight: 800; letter-spacing: .5px;
+      color: var(--pink-main); background: var(--pink-pale);
+      padding: 3px 11px; border-radius: var(--radius-pill); margin-bottom: 14px;
+    }
+
+    /* 진행 도트 */
+    .card-dots {
+      display: flex; gap: 8px; justify-content: center; margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--blue-pale); transition: background .25s var(--ease), transform .2s var(--ease);
+    }
+    .dot.seen  { background: var(--blue-soft); }
+    .dot.current { background: var(--blue-deep); transform: scale(1.35); }
+
+    /* 카드 하단 힌트 */
+    .card-hint { font-size: .8rem; color: var(--text-light); text-align: center; }
+
+    /* =====================================================
+       퀴즈 섹션
+    ===================================================== */
+    #quiz { background: var(--white); }
+    .quiz-box {
+      max-width: 580px; margin: 0 auto;
+      background: var(--card); border-radius: var(--radius-xl);
+      padding: 36px 32px; box-shadow: var(--shadow-md);
+    }
+    .quiz-score-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .quiz-score-badge {
+      background: var(--blue-pale); color: var(--blue-deep);
+      font-size: .82rem; font-weight: 800;
+      padding: 6px 16px; border-radius: var(--radius-pill);
+    }
+    .quiz-num { font-size: .82rem; color: var(--text-light); font-weight: 700; }
+
+    .quiz-q {
+      text-align: center; margin-bottom: 28px;
+    }
+    .quiz-q-label { font-size: .78rem; font-weight: 800; color: var(--pink-main); letter-spacing: .5px; margin-bottom: 10px; }
+    .quiz-q-word {
+      font-size: clamp(1.8rem,6vw,2.6rem); font-weight: 900;
+      letter-spacing: -.5px; color: var(--text);
+    }
+
+    .quiz-options { display: flex; flex-direction: column; gap: 12px; }
+    .quiz-opt {
+      padding: 14px 20px; border-radius: var(--radius-md);
+      border: 2px solid var(--blue-pale); background: var(--bg);
+      font-size: .97rem; font-weight: 700; color: var(--text);
+      text-align: left; transition: border-color .18s var(--ease), background .18s var(--ease), transform .15s var(--ease);
+    }
+    .quiz-opt:hover:not(:disabled) { border-color: var(--blue-main); background: var(--blue-pale); transform: translateX(4px); }
+    .quiz-opt.correct  { border-color: #4caf88 !important; background: #eafaf4 !important; color: #2e7d5e !important; }
+    .quiz-opt.wrong    { border-color: var(--pink-main) !important; background: var(--pink-pale) !important; color: var(--pink-main) !important; }
+    .quiz-opt:disabled { cursor: default; }
+
+    .quiz-feedback {
+      text-align: center; margin-top: 20px;
+      font-size: 1rem; font-weight: 800; display: none;
+    }
+    .quiz-feedback.show { display: block; animation: feedPop .35s var(--ease); }
+    @keyframes feedPop { from{transform:scale(.8);opacity:0} to{transform:scale(1);opacity:1} }
+
+    .quiz-next {
+      display: none; width: 100%; margin-top: 20px;
+      padding: 13px; border-radius: var(--radius-pill); border: none;
+      background: linear-gradient(135deg,var(--blue-deep),var(--blue-main));
+      color: #fff; font-weight: 800; font-size: .98rem;
+      box-shadow: 0 4px 16px rgba(58,126,181,.3);
+      transition: transform .2s var(--ease);
+    }
+    .quiz-next:hover { transform: translateY(-2px); }
+    .quiz-next.show  { display: block; animation: feedPop .3s var(--ease); }
+
+    /* 퀴즈 완료 화면 */
+    .quiz-done {
+      text-align: center; display: none;
+    }
+    .quiz-done.show { display: block; animation: feedPop .4s var(--ease); }
+    .quiz-done-cat { font-size: 4rem; margin-bottom: 12px; display:block; }
+    .quiz-done-score { font-size: 2.8rem; font-weight: 900; color: var(--blue-deep); line-height: 1; margin-bottom: 6px; }
+    .quiz-done-msg   { font-size: 1rem; color: var(--text-mid); margin-bottom: 26px; }
+    .quiz-restart {
+      background: linear-gradient(135deg,var(--blue-deep),var(--blue-main));
+      color: #fff; font-weight: 800; font-size: .98rem;
+      padding: 12px 34px; border-radius: var(--radius-pill); border: none;
+      box-shadow: 0 4px 16px rgba(58,126,181,.3);
+      transition: transform .2s var(--ease);
+    }
+    .quiz-restart:hover { transform: translateY(-2px); }
+
+    /* =====================================================
+       학습 통계
+    ===================================================== */
+    #stats { background: var(--bg); }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+      gap: 18px; max-width: 780px; margin: 0 auto;
+    }
+    .stat-card {
+      background: var(--white); border-radius: var(--radius-xl);
+      padding: 28px 24px; box-shadow: var(--shadow-sm);
+      display: flex; flex-direction: column; gap: 6px;
+      transition: transform .2s var(--ease), box-shadow .2s var(--ease);
+    }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+    .stat-icon { font-size: 2rem; margin-bottom: 2px; }
+    .stat-label { font-size: .8rem; font-weight: 700; color: var(--text-mid); }
+    .stat-val { font-size: 2.2rem; font-weight: 900; color: var(--blue-deep); line-height: 1; }
+    .stat-sub  { font-size: .78rem; color: var(--text-light); }
+
+    /* 진행률 바 */
+    .prog-wrap { max-width: 780px; margin: 28px auto 0; }
+    .prog-label { font-size: .85rem; font-weight: 700; color: var(--text-mid); margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .prog-track {
+      height: 12px; background: var(--blue-pale);
+      border-radius: var(--radius-pill); overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue-main), var(--pink-main));
+      border-radius: var(--radius-pill);
+      transition: width 1s var(--ease);
+    }
+
+    /* =====================================================
+       Footer
+    ===================================================== */
+    footer {
+      background: var(--text); color: rgba(255,255,255,.6);
+      padding: 48px 24px 36px; text-align: center;
+      position: relative; z-index: 1;
+    }
+    .footer-cat { font-size: 2.4rem; margin-bottom: 10px; animation: catBob 3s ease-in-out infinite; display:inline-block; }
+    .footer-name { font-size: 1.1rem; font-weight: 900; color: #fff; margin-bottom: 6px; }
+    .footer-tagline { font-size: .85rem; margin-bottom: 22px; }
+    .footer-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+    .footer-links a { font-size: .82rem; color: rgba(255,255,255,.45); transition: color .18s; }
+    .footer-links a:hover { color: var(--blue-soft); }
+    .footer-copy { font-size: .75rem; opacity: .35; }
+
+    /* =====================================================
+       토스트 & 공통 유틸
+    ===================================================== */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      background: var(--blue-deep); color: #fff;
+      padding: 10px 26px; border-radius: var(--radius-pill);
+      font-size: .88rem; font-weight: 700; z-index: 999;
+      display: none; white-space: nowrap;
+    }
+    .toast.show { display: block; animation: feedPop .3s var(--ease); }
+
+    /* 스크롤탑 */
+    #scrollTop {
+      position: fixed; bottom: 28px; right: 22px; z-index: 300;
+      width: 46px; height: 46px; border-radius: 50%; border: none;
+      background: var(--blue-deep); color: #fff; font-size: 1.2rem;
+      box-shadow: 0 4px 18px rgba(58,126,181,.38);
+      display: none; align-items: center; justify-content: center;
+      cursor: pointer; transition: transform .2s var(--ease);
+    }
+    #scrollTop.show { display: flex; }
+    #scrollTop:hover { transform: scale(1.1); }
+
+    /* reveal 애니메이션 */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+    .reveal.vis { opacity: 1; transform: translateY(0); }
+
+    /* =====================================================
+       반응형
+    ===================================================== */
+    @media(max-width:500px){
+      .quiz-box { padding: 26px 18px; }
+      .cheer-card { padding: 32px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 배경 버블 -->
+  <div class="deco-bubble"></div>
+  <div class="deco-bubble"></div>
+  <div class="deco-bubble"></div>
+
+  <!-- 토스트 -->
+  <div class="toast" id="toast"></div>
+
+  <!-- 스크롤탑 -->
+  <button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="맨 위로">↑</button>
+
+  <!-- =====================================================
+       네비게이션
+  ===================================================== -->
+  <nav>
+    <div class="nav-brand">
+      <span class="nav-cat">🐱</span>
+      <span>TOPIK Vocabulary Mate</span>
+    </div>
+    <div class="nav-links">
+      <a href="#cheer">응원</a>
+      <a href="#cards">단어카드</a>
+      <a href="#quiz">퀴즈</a>
+      <a href="#stats">통계</a>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- =====================================================
+         히어로
+    ===================================================== -->
+    <section id="hero">
+      <div class="hero-cats">
+        <span>😸</span><span>📚</span><span>✨</span>
+      </div>
+      <div class="hero-badge">🇰🇷 TOPIK 준비생 필수 앱</div>
+      <h1 class="hero-title">
+        단어 공부,<br><span class="grad">고양이랑 같이!</span>
+      </h1>
+      <p class="hero-sub">한국어 단어를 재미있게 외우고 퀴즈로 실력을 확인하세요 🐾</p>
+      <div class="hero-btns">
+        <a href="#cards" class="btn-primary">단어 카드 시작 📖</a>
+        <a href="#quiz"  class="btn-ghost">퀴즈 풀기 🎯</a>
+      </div>
+      <div class="hero-chips">
+        <div class="chip"><span class="chip-num">10</span> 개 핵심 단어</div>
+        <div class="chip"><span class="chip-num">3</span> 단계 플립 카드</div>
+        <div class="chip"><span class="chip-num">∞</span> 랜덤 퀴즈</div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         오늘의 응원 메시지
+    ===================================================== -->
+    <section id="cheer">
+      <div class="center">
+        <span class="sec-label">😺 오늘의 응원</span>
+        <h2 class="sec-title"><em>고양이</em>가 응원해요</h2>
+        <p class="sec-sub">매일 조금씩 꾸준히! 합격까지 냥이와 함께 💪</p>
+      </div>
+      <div class="cheer-card reveal" id="cheerCard">
+        <span class="cheer-cat" id="cheerCat">🐱</span>
+        <div class="cheer-msg" id="cheerMsg">로딩 중...</div>
+        <div class="cheer-zh" id="cheerZh"></div>
+        <button class="cheer-refresh" onclick="showCheer()">🔄 다른 응원 메시지</button>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         단어 카드
+    ===================================================== -->
+    <section id="cards">
+      <div class="center">
+        <span class="sec-label">📖 단어 카드</span>
+        <h2 class="sec-title">플립 카드로 <em>단어 외우기</em></h2>
+        <p class="sec-sub">카드를 클릭하면 뜻 → 예문 순서로 공개돼요 😸</p>
+      </div>
+
+      <!-- 진행 도트 -->
+      <div class="card-dots" id="cardDots"></div>
+
+      <!-- 카드 네비 -->
+      <div class="card-nav">
+        <button class="card-nav-btn" onclick="moveCard(-1)" title="이전">◀</button>
+        <span class="card-counter" id="cardCounter">1 / 10</span>
+        <button class="card-nav-btn" onclick="moveCard(1)"  title="다음">▶</button>
+      </div>
+
+      <!-- 플립 카드 -->
+      <div class="flip-scene">
+        <div class="flip-card" id="flipCard" onclick="flipNext()">
+          <!-- 앞면 -->
+          <div class="flip-face flip-front">
+            <div class="word-ko" id="faceKo">학교</div>
+            <div class="word-hint">탭해서 뜻 확인 👆</div>
+          </div>
+          <!-- 뒷면 - 중국어 뜻 -->
+          <div class="flip-face flip-back">
+            <div class="word-ko-small" id="backKo"></div>
+            <div class="word-zh" id="backZh"></div>
+            <div class="word-pron" id="backPron"></div>
+          </div>
+          <!-- 세 번째 - 예문 -->
+          <div class="flip-face flip-example">
+            <div class="ex-label">📝 예문</div>
+            <div class="ex-ko" id="exKo"></div>
+            <div class="ex-zh" id="exZh"></div>
+          </div>
+        </div>
+      </div>
+      <p class="card-hint" id="cardHint">👆 카드를 탭하면 뜻이 나와요</p>
+    </section>
+
+    <!-- =====================================================
+         퀴즈
+    ===================================================== -->
+    <section id="quiz">
+      <div class="center">
+        <span class="sec-label">🎯 랜덤 퀴즈</span>
+        <h2 class="sec-title">4지선다 <em>퀴즈</em></h2>
+        <p class="sec-sub">배운 단어를 퀴즈로 테스트해 봐요! 🐾</p>
+      </div>
+
+      <div class="quiz-box reveal">
+        <!-- 퀴즈 진행 화면 -->
+        <div id="quizPlay">
+          <div class="quiz-score-bar">
+            <div class="quiz-score-badge" id="quizScoreBadge">🐱 점수: 0</div>
+            <div class="quiz-num" id="quizNumLabel">1 / 10</div>
+          </div>
+          <div class="quiz-q">
+            <div class="quiz-q-label">이 단어의 중국어 뜻은?</div>
+            <div class="quiz-q-word" id="quizWord">학교</div>
+          </div>
+          <div class="quiz-options" id="quizOptions"></div>
+          <div class="quiz-feedback" id="quizFeedback"></div>
+          <button class="quiz-next" id="quizNext" onclick="nextQuiz()">다음 문제 ▶</button>
+        </div>
+
+        <!-- 퀴즈 완료 화면 -->
+        <div class="quiz-done" id="quizDone">
+          <span class="quiz-done-cat" id="doneCat">😸</span>
+          <div class="quiz-done-score" id="doneScore">0 / 10</div>
+          <div class="quiz-done-msg"  id="doneMsg"></div>
+          <button class="quiz-restart" onclick="startQuiz()">🔄 다시 풀기</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         학습 통계
+    ===================================================== -->
+    <section id="stats">
+      <div class="center">
+        <span class="sec-label">📊 학습 통계</span>
+        <h2 class="sec-title">나의 <em>학습 현황</em></h2>
+        <p class="sec-sub">오늘도 열심히 공부하고 있어요 😺</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card reveal">
+          <div class="stat-icon">📖</div>
+          <div class="stat-label">학습한 단어</div>
+          <div class="stat-val" id="statSeen">0</div>
+          <div class="stat-sub">/ 10 개</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-label">퀴즈 정답률</div>
+          <div class="stat-val" id="statAcc">—</div>
+          <div class="stat-sub" id="statAccSub">퀴즈를 풀어보세요</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-label">최고 점수</div>
+          <div class="stat-val" id="statBest">—</div>
+          <div class="stat-sub">/ 10 문제</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-label">오늘 퀴즈 횟수</div>
+          <div class="stat-val" id="statTries">0</div>
+          <div class="stat-sub">번 도전</div>
+        </div>
+      </div>
+
+      <!-- 진행률 바 -->
+      <div class="prog-wrap reveal">
+        <div class="prog-label">
+          <span>단어 학습 진행률</span>
+          <span id="progPct">0%</span>
+        </div>
+        <div class="prog-track">
+          <div class="prog-fill" id="progFill" style="width:0%"></div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /.page-wrap -->
+
+  <!-- =====================================================
+       Footer
+  ===================================================== -->
+  <footer>
+    <div class="footer-cat">🐱</div>
+    <div class="footer-name">TOPIK Vocabulary Mate</div>
+    <div class="footer-tagline">냥이랑 함께하는 한국어 단어 학습 🇰🇷 Made with ❤️ & AI</div>
+    <div class="footer-links">
+      <a href="#hero">홈</a>
+      <a href="#cheer">응원 메시지</a>
+      <a href="#cards">단어 카드</a>
+      <a href="#quiz">퀴즈</a>
+      <a href="#stats">통계</a>
+    </div>
+    <div class="footer-copy">© 2025 TOPIK Vocabulary Mate · GitHub Pages Ready · 加油! 파이팅!</div>
+  </footer>
+
+  <!-- =====================================================
+       JavaScript
+  ===================================================== -->
+  <script>
+    /* ==========================================================
+       데이터 - 단어 목록
+    ========================================================== */
+    const VOCAB = [
+      {
+        ko: '학교', zh: '学校', pron: 'xuéxiào',
+        exKo: '저는 학교에서 한국어를 배워요.',
+        exZh: '我在学校学习韩语。'
+      },
+      {
+        ko: '사과', zh: '苹果', pron: 'píngguǒ',
+        exKo: '이 사과는 정말 달고 맛있어요.',
+        exZh: '这个苹果真的又甜又好吃。'
+      },
+      {
+        ko: '친구', zh: '朋友', pron: 'péngyou',
+        exKo: '제 친구는 한국 음식을 좋아해요.',
+        exZh: '我的朋友喜欢韩国食物。'
+      },
+      {
+        ko: '공부', zh: '学习', pron: 'xuéxí',
+        exKo: '매일 두 시간씩 공부해요.',
+        exZh: '每天学习两个小时。'
+      },
+      {
+        ko: '가족', zh: '家人', pron: 'jiārén',
+        exKo: '가족이 보고 싶어요.',
+        exZh: '我想念我的家人。'
+      },
+      {
+        ko: '음식', zh: '食物', pron: 'shíwù',
+        exKo: '한국 음식은 정말 맛있어요.',
+        exZh: '韩国食物真的很好吃。'
+      },
+      {
+        ko: '여행', zh: '旅行', pron: 'lǚxíng',
+        exKo: '방학 때 제주도 여행을 갈 거예요.',
+        exZh: '假期我要去济州岛旅行。'
+      },
+      {
+        ko: '문화', zh: '文化', pron: 'wénhuà',
+        exKo: '한국 문화를 배우는 것이 재미있어요.',
+        exZh: '学习韩国文化很有趣。'
+      },
+      {
+        ko: '책', zh: '书', pron: 'shū',
+        exKo: '도서관에서 책을 빌렸어요.',
+        exZh: '我在图书馆借了书。'
+      },
+      {
+        ko: '사랑', zh: '爱', pron: 'ài',
+        exKo: '가족에 대한 사랑은 정말 소중해요.',
+        exZh: '对家人的爱真的很宝贵。'
+      },
+    ];
+
+    /* ==========================================================
+       응원 메시지 목록
+    ========================================================== */
+    const CHEERS = [
+      { cat:'😸', ko:'포기하지 마세요! 꾸준함이 실력이에요.', zh:'不要放弃！坚持就是实力。' },
+      { cat:'🐈', ko:'오늘 배운 단어 하나가 내일의 합격을 만들어요.', zh:'今天学的一个单词，成就明天的合格。' },
+      { cat:'😺', ko:'실수해도 괜찮아요. 그게 배움이에요!', zh:'犯错也没关系，那就是学习！' },
+      { cat:'🐱', ko:'조금씩이라도 매일 하면 반드시 늘어요.', zh:'每天哪怕学一点点，一定会进步的。' },
+      { cat:'😻', ko:'한국어 마스터까지 화이팅! 냥이가 응원해요 🐾', zh:'加油成为韩语达人！猫咪为你加油🐾' },
+      { cat:'🙀', ko:'어렵더라도 멈추지 마세요. 곧 익숙해져요!', zh:'再难也别停下来，很快就会熟悉的！' },
+      { cat:'😼', ko:'TOPIK 합격, 분명히 할 수 있어요! 냐옹~', zh:'TOPIK一定能合格！喵~' },
+    ];
+
+    /* ==========================================================
+       상태 변수
+    ========================================================== */
+    let cardIdx   = 0;          // 현재 카드 인덱스
+    let cardFlips = 0;          // 현재 카드 플립 횟수 (0,1,2)
+    let seenSet   = new Set();  // 학습한 단어 인덱스
+
+    // 퀴즈 상태
+    let quizQ        = [];  // 섞인 퀴즈 배열 [{wordIdx, options:[...], answerIdx}]
+    let quizCur      = 0;
+    let quizScore    = 0;
+    let quizTries    = 0;
+    let quizBest     = null;
+    let quizTotalCorrect = 0;
+    let quizTotalQ   = 0;
+    let quizAnswered = false;
+
+    /* ==========================================================
+       응원 메시지
+    ========================================================== */
+    function showCheer() {
+      const c = CHEERS[Math.floor(Math.random() * CHEERS.length)];
+      document.getElementById('cheerCat').textContent = c.cat;
+      document.getElementById('cheerMsg').textContent = c.ko;
+      document.getElementById('cheerZh').textContent  = c.zh;
+    }
+    showCheer(); // 초기 실행
+
+    /* ==========================================================
+       단어 카드
+    ========================================================== */
+    // 도트 초기화
+    function initDots() {
+      const wrap = document.getElementById('cardDots');
+      wrap.innerHTML = '';
+      VOCAB.forEach((_, i) => {
+        const d = document.createElement('span');
+        d.className = 'dot' + (i === 0 ? ' current' : '');
+        wrap.appendChild(d);
+      });
+    }
+
+    // 도트 업데이트
+    function updateDots() {
+      document.querySelectorAll('.dot').forEach((d, i) => {
+        d.className = 'dot' + (seenSet.has(i) ? ' seen' : '') + (i === cardIdx ? ' current' : '');
+      });
+    }
+
+    // 카드 데이터 렌더
+    function renderCard() {
+      const w = VOCAB[cardIdx];
+      // 앞면
+      document.getElementById('faceKo').textContent = w.ko;
+      // 뒷면
+      document.getElementById('backKo').textContent   = w.ko;
+      document.getElementById('backZh').textContent   = w.zh;
+      document.getElementById('backPron').textContent = w.pron;
+      // 예문
+      document.getElementById('exKo').textContent = w.exKo;
+      document.getElementById('exZh').textContent = w.exZh;
+      // 카운터
+      document.getElementById('cardCounter').textContent = `${cardIdx + 1} / ${VOCAB.length}`;
+      // 힌트
+      document.getElementById('cardHint').textContent = '👆 카드를 탭하면 뜻이 나와요';
+      // 플립 리셋
+      cardFlips = 0;
+      const fc = document.getElementById('flipCard');
+      fc.className = 'flip-card';
+    }
+
+    // 카드 이동
+    function moveCard(dir) {
+      cardIdx = (cardIdx + dir + VOCAB.length) % VOCAB.length;
+      renderCard();
+      updateDots();
+      updateStats();
+    }
+
+    // 플립
+    function flipNext() {
+      cardFlips++;
+      const fc = document.getElementById('flipCard');
+      const hint = document.getElementById('cardHint');
+      if (cardFlips === 1) {
+        fc.className = 'flip-card flipped-once';
+        hint.textContent = '👆 다시 탭하면 예문이 나와요';
+        seenSet.add(cardIdx);
+        updateDots();
+        updateStats();
+      } else if (cardFlips === 2) {
+        fc.className = 'flip-card flipped-twice';
+        hint.textContent = '✅ 다음 단어로 넘어가 보세요!';
+      } else {
+        // 세 번째 클릭 = 리셋
+        cardFlips = 0;
+        fc.className = 'flip-card';
+        hint.textContent = '👆 카드를 탭하면 뜻이 나와요';
+      }
+    }
+
+    // 초기화
+    initDots();
+    renderCard();
+
+    /* ==========================================================
+       퀴즈
+    ========================================================== */
+    // 배열 셔플 (Fisher-Yates)
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // 퀴즈 생성: 모든 단어를 섞어서 4지선다 구성
+    function buildQuizQ() {
+      return shuffle(VOCAB).map((word, _, arr) => {
+        const wrong = shuffle(arr.filter(w => w.ko !== word.ko)).slice(0, 3).map(w => w.zh);
+        const opts = shuffle([word.zh, ...wrong]);
+        return { word, answer: word.zh, opts };
+      });
+    }
+
+    function startQuiz() {
+      quizQ       = buildQuizQ();
+      quizCur     = 0;
+      quizScore   = 0;
+      quizAnswered= false;
+      document.getElementById('quizPlay').style.display = 'block';
+      document.getElementById('quizDone').classList.remove('show');
+      renderQuizQ();
+    }
+
+    function renderQuizQ() {
+      const q = quizQ[quizCur];
+      quizAnswered = false;
+      document.getElementById('quizWord').textContent     = q.word.ko;
+      document.getElementById('quizNumLabel').textContent = `${quizCur + 1} / ${quizQ.length}`;
+      document.getElementById('quizScoreBadge').textContent = `🐱 점수: ${quizScore}`;
+      document.getElementById('quizFeedback').className  = 'quiz-feedback';
+      document.getElementById('quizFeedback').textContent= '';
+      document.getElementById('quizNext').className      = 'quiz-next';
+
+      const wrap = document.getElementById('quizOptions');
+      wrap.innerHTML = '';
+      q.opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-opt';
+        btn.textContent = opt;
+        btn.onclick = () => checkQuiz(btn, opt, q.answer);
+        wrap.appendChild(btn);
+      });
+    }
+
+    function checkQuiz(btn, chosen, answer) {
+      if (quizAnswered) return;
+      quizAnswered = true;
+      quizTotalQ++;
+
+      const allBtns = document.querySelectorAll('.quiz-opt');
+      allBtns.forEach(b => {
+        b.disabled = true;
+        if (b.textContent === answer) b.classList.add('correct');
+      });
+
+      const fb = document.getElementById('quizFeedback');
+      if (chosen === answer) {
+        btn.classList.add('correct');
+        quizScore++;
+        quizTotalCorrect++;
+        fb.textContent = '🎉 정답이에요! 냥냥~';
+        fb.style.color = '#2e7d5e';
+      } else {
+        btn.classList.add('wrong');
+        fb.textContent = `😿 아쉬워요! 정답은 "${answer}" 이에요.`;
+        fb.style.color = 'var(--pink-main)';
+      }
+      fb.classList.add('show');
+      document.getElementById('quizNext').classList.add('show');
+      document.getElementById('quizScoreBadge').textContent = `🐱 점수: ${quizScore}`;
+    }
+
+    function nextQuiz() {
+      quizCur++;
+      if (quizCur >= quizQ.length) {
+        endQuiz();
+      } else {
+        renderQuizQ();
+      }
+    }
+
+    function endQuiz() {
+      quizTries++;
+      if (quizBest === null || quizScore > quizBest) quizBest = quizScore;
+
+      document.getElementById('quizPlay').style.display = 'none';
+      const done = document.getElementById('quizDone');
+      done.classList.add('show');
+
+      const pct = Math.round((quizScore / quizQ.length) * 100);
+      let cat, msg;
+      if (pct === 100)     { cat = '😸'; msg = '완벽해요! TOPIK 합격은 문제없어요! 🏆'; }
+      else if (pct >= 70)  { cat = '😺'; msg = '잘했어요! 조금만 더 연습해요 💪'; }
+      else if (pct >= 40)  { cat = '😿'; msg = '괜찮아요! 단어 카드로 복습해봐요 📖'; }
+      else                 { cat = '🙀'; msg = '단어 카드부터 다시 시작해봐요! 냐옹 🐾'; }
+
+      document.getElementById('doneCat').textContent   = cat;
+      document.getElementById('doneScore').textContent = `${quizScore} / ${quizQ.length}`;
+      document.getElementById('doneMsg').textContent   = msg;
+
+      updateStats();
+    }
+
+    // 퀴즈 자동 시작
+    startQuiz();
+
+    /* ==========================================================
+       학습 통계 업데이트
+    ========================================================== */
+    function updateStats() {
+      // 학습한 단어 수
+      document.getElementById('statSeen').textContent = seenSet.size;
+
+      // 정답률
+      if (quizTotalQ > 0) {
+        const acc = Math.round((quizTotalCorrect / quizTotalQ) * 100);
+        document.getElementById('statAcc').textContent    = acc + '%';
+        document.getElementById('statAccSub').textContent = `${quizTotalCorrect} / ${quizTotalQ} 정답`;
+      }
+
+      // 최고 점수
+      if (quizBest !== null) {
+        document.getElementById('statBest').textContent = quizBest;
+      }
+
+      // 도전 횟수
+      document.getElementById('statTries').textContent = quizTries;
+
+      // 진행률 바
+      const pct = Math.round((seenSet.size / VOCAB.length) * 100);
+      document.getElementById('progPct').textContent  = pct + '%';
+      document.getElementById('progFill').style.width = pct + '%';
+    }
+    updateStats();
+
+    /* ==========================================================
+       스크롤 reveal & 스크롤탑
+    ========================================================== */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('vis'), i * 90);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 380);
+    });
+
+    /* ==========================================================
+       prefers-reduced-motion 존중
+    ========================================================== */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.deco-bubble, .nav-cat, .footer-cat').forEach(el => {
+        el.style.animation = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
